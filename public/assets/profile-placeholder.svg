@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="Profile photo placeholder">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#27272a"/><stop offset="1" stop-color="#3b2a63"/></linearGradient></defs>
+  <rect width="600" height="800" fill="url(#g)"/>
+  <circle cx="300" cy="300" r="110" fill="#8b5cf6" opacity=".55"/>
+  <path d="M110 800c0-140 80-230 190-230s190 90 190 230z" fill="#8b5cf6" opacity=".55"/>
+  <text x="300" y="740" text-anchor="middle" font-family="Poppins,Arial,sans-serif" font-size="30" fill="#e4e4e7" opacity=".8">Add your photo</text>
+</svg>
