@@ -5,8 +5,6 @@ import { profile } from "../content/profile";
 import { getProfileLinks } from "../utils/profileLinks";
 import Magnetic from "../components/Magnetic";
 
-const ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT || "";
-
 const empty = { name: "", email: "", subject: "", message: "", _gotcha: "" };
 
 const validate = (v) => {
@@ -24,7 +22,7 @@ const inputClass =
 export default function Contact() {
   const [values, setValues] = useState(empty);
   const [errors, setErrors] = useState({});
-  const [state, setState] = useState("idle"); // idle | sending | success | error | unconfigured
+  const [state, setState] = useState("idle"); // idle | sending | success | error
 
   const onChange = (e) =>
     setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
@@ -35,13 +33,9 @@ export default function Contact() {
     setErrors(errs);
     if (Object.keys(errs).length) return;
     if (values._gotcha) return; // bot
-    if (!ENDPOINT) {
-      setState("unconfigured");
-      return;
-    }
     setState("sending");
     try {
-      const res = await fetch(ENDPOINT, {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
@@ -49,11 +43,16 @@ export default function Contact() {
           email: values.email,
           subject: values.subject,
           message: values.message,
+          _gotcha: values._gotcha,
         }),
       });
-      if (!res.ok) throw new Error("bad response");
-      setState("success");
-      setValues(empty);
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok === true) {
+        setState("success");
+        setValues(empty);
+      } else {
+        setState("error");
+      }
     } catch {
       setState("error");
     }
@@ -250,7 +249,7 @@ export default function Contact() {
               </Magnetic>
             </div>
 
-            {/* Honest Not-Sent Status Notifications */}
+            {/* Status Notifications */}
             <div role="status" aria-live="polite" className="text-sm pt-2">
               {state === "success" && (
                 <p className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-3.5 text-emerald-300">
@@ -259,27 +258,21 @@ export default function Contact() {
               )}
               {state === "error" && (
                 <p className="rounded-xl border border-red-500/40 bg-red-500/10 p-3.5 text-red-300">
-                  Something went wrong and your message was not sent. Please try again
-                  {profile.links?.email ? " or email me directly" : ""}.
-                </p>
-              )}
-              {state === "unconfigured" && (
-                <p className="rounded-xl border border-[var(--accent)]/40 bg-[var(--accent)]/10 p-3.5 text-zinc-200">
-                  The contact form isn&apos;t connected to an email backend endpoint yet, so this message was{" "}
-                  <strong>not</strong> sent.
-                  {mailto && (
+                  Message not sent, please try again
+                  {profile.links?.email ? (
                     <>
-                      {" "}
-                      You can{" "}
+                      {" "}or{" "}
                       <a
                         className="underline text-[var(--accent)] hover:text-white font-semibold"
-                        href={mailto}
+                        href={`mailto:${profile.links.email}`}
                       >
-                        send it directly from your email client
-                      </a>{" "}
-                      instead.
+                        email me directly
+                      </a>
                     </>
+                  ) : (
+                    " or email me directly"
                   )}
+                  .
                 </p>
               )}
             </div>

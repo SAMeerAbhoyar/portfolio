@@ -2,19 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import { FiX, FiMail, FiGithub, FiLinkedin, FiArrowUpRight } from "react-icons/fi";
 import { profile } from "../content/profile";
 import { getProfileLinks } from "../utils/profileLinks";
-import { scrollToTarget } from "../utils/scroll";
+import { lenis, scrollToTarget } from "../lib/lenis";
 
 const OVERLAY_NAV_ITEMS = [
   { id: "home", label: "Home", num: "01" },
   { id: "about", label: "About", num: "02" },
-  { id: "what-i-do", label: "Focus", num: "03" },
-  { id: "skills", label: "Skills", num: "04" },
-  { id: "projects", label: "Projects", num: "05" },
-  { id: "experience", label: "Experience", num: "06" },
-  { id: "research", label: "Research", num: "07" },
-  { id: "certifications", label: "Certifications", num: "08" },
-  { id: "education", label: "Education", num: "09" },
-  { id: "contact", label: "Contact", num: "10" },
+  { id: "skills", label: "Skills", num: "03" },
+  { id: "projects", label: "Projects", num: "04" },
+  { id: "experience", label: "Experience", num: "05" },
+  { id: "research", label: "Research", num: "06" },
+  { id: "certifications", label: "Certifications", num: "07" },
+  { id: "education", label: "Education", num: "08" },
+  { id: "contact", label: "Contact", num: "09" },
 ];
 
 const BOTTOM_NAV_ITEMS = [
@@ -138,8 +137,14 @@ export default function Navbar() {
   }, []);
 
   const handleNavClick = (id) => {
+    document.body.style.overflow = "";
     setMenuOpen(false);
-    scrollToTarget(`#${id}`);
+    const target = id === "home" ? "#home" : `#${id}`;
+    if (lenis) {
+      lenis.scrollTo(target, { offset: 0, duration: 1.2 });
+    } else {
+      scrollToTarget(target, { offset: 0, duration: 1.2 });
+    }
   };
 
   const githubLink = getProfileLinks(["github"])[0]?.href || profile.links?.github;
@@ -154,7 +159,14 @@ export default function Navbar() {
         {/* Dive In + Button with 24px gap to the left of MENU */}
         <button
           type="button"
-          onClick={() => scrollToTarget("#about")}
+          onClick={(e) => {
+            e.preventDefault();
+            if (lenis) {
+              lenis.scrollTo("#about", { offset: 0, duration: 1.2 });
+            } else {
+              scrollToTarget("#about", { offset: 0, duration: 1.2 });
+            }
+          }}
           className="group flex items-center gap-1.5 rounded-full border border-white/10 bg-[#0c0c11]/85 px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md shadow-2xl transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_0_20px_rgba(239,91,79,0.3)] cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
         >
           <span>Dive In</span>

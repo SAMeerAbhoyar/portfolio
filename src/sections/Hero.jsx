@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import { FiArrowDown } from "react-icons/fi";
 import { profile } from "../content/profile";
 import { getAsset } from "../utils/assets";
-import { scrollToTarget } from "../utils/scroll";
+import { lenis, scrollToTarget } from "../lib/lenis";
 
 const SUBTITLES = [
   "Computer Science and Engineering Student",
@@ -387,7 +387,14 @@ export default function Hero() {
           {/* Scroll Indicator */}
           <button
             type="button"
-            onClick={() => scrollToTarget("#about")}
+            onClick={(e) => {
+              e.preventDefault();
+              if (lenis) {
+                lenis.scrollTo("#about", { offset: 0, duration: 1.2 });
+              } else {
+                scrollToTarget("#about", { offset: 0, duration: 1.2 });
+              }
+            }}
             aria-label="Scroll to content"
             className="group flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)] hover:text-white transition-colors cursor-pointer"
           >

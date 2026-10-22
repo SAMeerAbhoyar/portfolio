@@ -58,8 +58,11 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mt-8 border-t border-white/5 pt-6 text-center text-xs text-[var(--muted)]">
+      <div className="mt-8 border-t border-white/5 pt-6 text-center text-xs text-[var(--muted)] flex flex-col gap-1.5 items-center">
         <p>© {new Date().getFullYear()} {profile.name}. All rights reserved.</p>
+        <p className="text-[11px] text-zinc-500 max-w-xl mx-auto">
+          This site records anonymous visit data (IP address, approximate location, device) for analytics and security.
+        </p>
       </div>
     </footer>
   );

@@ -3,8 +3,9 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { FiArrowUp } from "react-icons/fi";
 
-import { initSmoothScroll, destroySmoothScroll, scrollToTarget } from "./utils/scroll";
+import { lenis, initSmoothScroll, destroySmoothScroll, scrollToTarget } from "./lib/lenis";
 
+import VisitTracker from "./components/VisitTracker";
 import ParticleField from "./components/ParticleField";
 import CursorSpotlight from "./components/CursorSpotlight";
 import ParallaxBlobs from "./components/ParallaxBlobs";
@@ -56,6 +57,9 @@ function App() {
 
   return (
     <div className="relative min-h-screen bg-[#050507] text-white selection:bg-[#ef5b4f]/30 selection:text-white">
+      {/* Anonymous visit tracker */}
+      <VisitTracker />
+
       {/* Background Noise / Grain Overlay */}
       <div
         className="pointer-events-none fixed inset-0 z-0 bg-grain opacity-50"
@@ -113,7 +117,14 @@ function App() {
       {/* Smooth Back to Top Button */}
       <button
         type="button"
-        onClick={() => scrollToTarget(0)}
+        onClick={(e) => {
+          e.preventDefault();
+          if (lenis) {
+            lenis.scrollTo(0, { offset: 0, duration: 1.2 });
+          } else {
+            scrollToTarget(0, { offset: 0, duration: 1.2 });
+          }
+        }}
         aria-label="Back to top"
         className={`fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[#0c0c11]/90 text-[var(--accent)] shadow-xl shadow-black/80 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white hover:shadow-[0_0_20px_rgba(239,91,79,0.4)] focus-visible:outline-2 focus-visible:outline-[var(--accent)] cursor-pointer ${
           showTopBtn

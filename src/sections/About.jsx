@@ -148,10 +148,25 @@ export default function About() {
           0.85
         );
       }
+
+      // Refresh ScrollTrigger after pinned section is created
+      ScrollTrigger.refresh();
     }, sectionRef);
+
+    const refreshST = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener("resize", refreshST);
+    window.addEventListener("load", refreshST);
+    if (document.fonts) {
+      document.fonts.ready.then(refreshST).catch(() => {});
+    }
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("resize", refreshST);
+      window.removeEventListener("load", refreshST);
       ctx.revert();
     };
   }, []);
